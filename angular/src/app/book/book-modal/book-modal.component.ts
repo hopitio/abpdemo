@@ -18,6 +18,7 @@ export class BookModalComponent implements OnChanges {
 
   form: FormGroup;
   bookTypes = bookTypeOptions;
+  activeTab = 'basic'; // Default tab
 
   constructor(
     private bookService: BookService,
@@ -59,9 +60,13 @@ export class BookModalComponent implements OnChanges {
       this.onSave.emit();
     });
   }
-
   closeModal() {
     this.isModalOpen = false;
+    this.activeTab = 'basic'; // Reset to first tab
     this.isModalOpenChange.emit(this.isModalOpen);
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
   }
 }

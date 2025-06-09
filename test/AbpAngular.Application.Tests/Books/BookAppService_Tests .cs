@@ -17,14 +17,12 @@ public abstract class BookAppService_Tests<TStartupModule> : AbpAngularApplicati
     protected BookAppService_Tests()
     {
         _bookAppService = GetRequiredService<IBookAppService>();
-    }
-
-    [Fact]
+    }    [Fact]
     public async Task Should_Get_List_Of_Books()
     {
         //Act
         var result = await _bookAppService.GetListAsync(
-            new PagedAndSortedResultRequestDto()
+            new GetBookListDto()
         );
 
         //Assert

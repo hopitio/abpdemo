@@ -8,7 +8,7 @@ public interface IBookAppService :
     ICrudAppService< //Defines CRUD methods
         BookDto, //Used to show books
         Guid, //Primary key of the book entity
-        PagedAndSortedResultRequestDto, //Used for paging/sorting
+        GetBookListDto, //Used for paging/sorting/filtering
         CreateUpdateBookDto> //Used to create/update a book
 {
 

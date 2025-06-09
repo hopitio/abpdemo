@@ -17,14 +17,20 @@ export class BookComponent implements OnInit {
 
   isModalOpen = false;
 
+  filter = '';
+
   constructor(
     public readonly list: ListService,
     private bookService: BookService,
     private confirmation: ConfirmationService
   ) {}
-
   ngOnInit() {
-    const bookStreamCreator = (query) => this.bookService.getList(query);
+    const bookStreamCreator = (query) => {
+      return this.bookService.getList({
+        ...query,
+        filter: this.filter
+      });
+    };
 
     this.list.hookToQuery(bookStreamCreator).subscribe((response) => {
       this.book = response;
@@ -49,8 +55,16 @@ export class BookComponent implements OnInit {
       }
     });
   }
-
   onModalSave() {
+    this.list.get();
+  }
+
+  onFilterChange() {
+    this.list.get();
+  }
+
+  clearFilter() {
+    this.filter = '';
     this.list.get();
   }
 }

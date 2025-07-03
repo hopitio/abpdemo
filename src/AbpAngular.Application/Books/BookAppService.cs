@@ -9,6 +9,8 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq.Dynamic.Core;
+using Volo.Abp.Caching;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace AbpAngular.Books;
 
@@ -16,14 +18,20 @@ namespace AbpAngular.Books;
 public class BookAppService : ApplicationService, IBookAppService
 {
     private readonly IRepository<Book, Guid> _repository;
-    private readonly IRepository<BookSupplier> _bookSupplierRepository;
+    private readonly IRepository<Supplier, Guid> _supplierRepository;
+    private readonly IDistributedCache<SupplierDto> _supplierCache;
+    private readonly IMemoryCache _memoryCache;
 
     public BookAppService(
         IRepository<Book, Guid> repository,
-        IRepository<BookSupplier> bookSupplierRepository)
+        IRepository<Supplier, Guid> supplierRepository,
+        IDistributedCache<SupplierDto> supplierCache,
+        IMemoryCache memoryCache)
     {
         _repository = repository;
-        _bookSupplierRepository = bookSupplierRepository;
+        _supplierRepository = supplierRepository;
+        _supplierCache = supplierCache;
+        _memoryCache = memoryCache;
     }
 
     // Helper methods for converting between string and list of IDs
@@ -35,6 +43,51 @@ public class BookAppService : ApplicationService, IBookAppService
     private string ConvertSupplierIdsToString(List<Guid> supplierIds)
     {
         return SupplierHelper.ConvertSupplierIdsToString(supplierIds);
+    }
+
+    // Helper method to get suppliers with caching
+    private async Task<List<SupplierDto>> GetSuppliersWithCacheAsync(List<Guid> supplierIds)
+    {
+        if (!supplierIds.Any())
+        {
+            return new List<SupplierDto>();
+        }
+
+        var suppliers = new List<SupplierDto>();
+        var uncachedIds = new List<Guid>();
+
+        // Check cache first
+        foreach (var supplierId in supplierIds)
+        {
+            var cacheKey = $"supplier_{supplierId}";
+            var cachedSupplier = _memoryCache.Get<SupplierDto>(cacheKey);
+            
+            if (cachedSupplier != null)
+            {
+                suppliers.Add(cachedSupplier);
+            }
+            else
+            {
+                uncachedIds.Add(supplierId);
+            }
+        }
+
+        // Fetch uncached suppliers from database
+        if (uncachedIds.Any())
+        {
+            var dbSuppliers = await _supplierRepository.GetListAsync(s => uncachedIds.Contains(s.Id));
+            var dbSupplierDtos = ObjectMapper.Map<List<Supplier>, List<SupplierDto>>(dbSuppliers);
+
+            // Cache the fetched suppliers
+            foreach (var supplierDto in dbSupplierDtos)
+            {
+                var cacheKey = $"supplier_{supplierDto.Id}";
+                _memoryCache.Set(cacheKey, supplierDto, TimeSpan.FromMinutes(15)); // Cache for 15 minutes
+                suppliers.Add(supplierDto);
+            }
+        }
+
+        return suppliers;
     }
 
     public async Task<BookDto> GetAsync(Guid id)
@@ -49,18 +102,11 @@ public class BookAppService : ApplicationService, IBookAppService
             throw new Volo.Abp.Domain.Entities.EntityNotFoundException(typeof(Book), id);
         }
         
-        // Load suppliers for this book
-        var bookSuppliers = await _bookSupplierRepository.GetListAsync(bs => bs.BookId == id);
-        var supplierIds = bookSuppliers.Select(bs => bs.SupplierId).ToList();
-        
         var bookDto = ObjectMapper.Map<Book, BookDto>(book);
         
-        if (supplierIds.Any())
-        {
-            var supplierRepository = LazyServiceProvider.LazyGetRequiredService<IRepository<Supplier, Guid>>();
-            var suppliers = await supplierRepository.GetListAsync(s => supplierIds.Contains(s.Id));
-            bookDto.Suppliers = ObjectMapper.Map<List<Supplier>, List<SupplierDto>>(suppliers);
-        }
+        // Load suppliers from the Suppliers field
+        var supplierIds = ConvertStringToSupplierIds(book.Suppliers);
+        bookDto.Suppliers = await GetSuppliersWithCacheAsync(supplierIds);
         
         return bookDto;
     }
@@ -85,40 +131,35 @@ public class BookAppService : ApplicationService, IBookAppService
 
         var bookDtos = ObjectMapper.Map<List<Book>, List<BookDto>>(books);
 
-        // Load suppliers for each book
-        var bookIds = books.Select(b => b.Id).ToList();
-        var bookSuppliers = await _bookSupplierRepository.GetListAsync(bs => bookIds.Contains(bs.BookId));
-        var supplierIds = bookSuppliers.Select(bs => bs.SupplierId).Distinct().ToList();
+        // Load suppliers for each book from the Suppliers field
+        var allSupplierIds = new List<Guid>();
+        var bookSupplierMapping = new Dictionary<Guid, List<Guid>>();
 
-        if (supplierIds.Any())
+        foreach (var book in books)
         {
-            var supplierRepository = LazyServiceProvider.LazyGetRequiredService<IRepository<Supplier, Guid>>();
-            var suppliers = await supplierRepository.GetListAsync(s => supplierIds.Contains(s.Id));
-            var supplierDtos = ObjectMapper.Map<List<Supplier>, List<SupplierDto>>(suppliers);
-
-            // Group suppliers by book
-            var suppliersByBook = bookSuppliers.GroupBy(bs => bs.BookId)
-                .ToDictionary(g => g.Key, g => g.Select(bs => bs.SupplierId).ToList());
-
-            // Assign suppliers to each book
-            foreach (var bookDto in bookDtos)
-            {
-                var bookId = bookDto.Id;
-                if (suppliersByBook.ContainsKey(bookId))
-                {
-                    var bookSupplierIds = suppliersByBook[bookId];
-                    bookDto.Suppliers = supplierDtos.Where(s => bookSupplierIds.Contains(s.Id)).ToList();
-                }
-                else
-                {
-                    bookDto.Suppliers = new List<SupplierDto>();
-                }
-            }
+            var supplierIds = ConvertStringToSupplierIds(book.Suppliers);
+            bookSupplierMapping[book.Id] = supplierIds;
+            allSupplierIds.AddRange(supplierIds);
         }
-        else
+
+        // Get unique supplier IDs and fetch them with cache
+        var uniqueSupplierIds = allSupplierIds.Distinct().ToList();
+        var allSuppliers = await GetSuppliersWithCacheAsync(uniqueSupplierIds);
+        var supplierDictionary = allSuppliers.ToDictionary(s => s.Id);
+
+        // Assign suppliers to each book
+        foreach (var bookDto in bookDtos)
         {
-            // No suppliers, initialize empty lists
-            foreach (var bookDto in bookDtos)
+            var bookId = bookDto.Id;
+            if (bookSupplierMapping.ContainsKey(bookId))
+            {
+                var bookSupplierIds = bookSupplierMapping[bookId];
+                bookDto.Suppliers = bookSupplierIds
+                    .Where(id => supplierDictionary.ContainsKey(id))
+                    .Select(id => supplierDictionary[id])
+                    .ToList();
+            }
+            else
             {
                 bookDto.Suppliers = new List<SupplierDto>();
             }
@@ -147,19 +188,12 @@ public class BookAppService : ApplicationService, IBookAppService
         
         await _repository.InsertAsync(book);
         
-        // Handle many-to-many relationship with suppliers
-        if (supplierIds.Any())
-        {
-            var bookSuppliers = supplierIds.Select(supplierId => new BookSupplier
-            {
-                BookId = book.Id,
-                SupplierId = supplierId
-            }).ToList();
-            
-            await _bookSupplierRepository.InsertManyAsync(bookSuppliers);
-        }
+        var bookDto = ObjectMapper.Map<Book, BookDto>(book);
         
-        return ObjectMapper.Map<Book, BookDto>(book);
+        // Load suppliers for the response
+        bookDto.Suppliers = await GetSuppliersWithCacheAsync(supplierIds.Distinct().ToList());
+        
+        return bookDto;
     }
 
     [Authorize(AbpAngularPermissions.Books.Edit)]
@@ -180,23 +214,12 @@ public class BookAppService : ApplicationService, IBookAppService
         
         await _repository.UpdateAsync(book);
         
-        // Remove existing supplier relationships
-        var existingBookSuppliers = await _bookSupplierRepository.GetListAsync(bs => bs.BookId == id);
-        await _bookSupplierRepository.DeleteManyAsync(existingBookSuppliers);
+        var bookDto = ObjectMapper.Map<Book, BookDto>(book);
         
-        // Add new supplier relationships
-        if (supplierIds.Any())
-        {
-            var bookSuppliers = supplierIds.Select(supplierId => new BookSupplier
-            {
-                BookId = book.Id,
-                SupplierId = supplierId
-            }).ToList();
-            
-            await _bookSupplierRepository.InsertManyAsync(bookSuppliers);
-        }
+        // Load suppliers for the response
+        bookDto.Suppliers = await GetSuppliersWithCacheAsync(supplierIds.Distinct().ToList());
         
-        return ObjectMapper.Map<Book, BookDto>(book);
+        return bookDto;
     }
 
     [Authorize(AbpAngularPermissions.Books.Delete)]

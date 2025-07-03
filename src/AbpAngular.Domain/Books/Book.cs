@@ -15,6 +15,9 @@ public class Book : AuditedAggregateRoot<Guid>
 
     public float Price { get; set; }
     
+    // Comma-separated supplier IDs
+    public string Suppliers { get; set; } = string.Empty;
+    
     // Navigation property for many-to-many relationship
     public virtual ICollection<BookSupplier> BookSuppliers { get; set; } = new List<BookSupplier>();
 }

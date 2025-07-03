@@ -85,3 +85,49 @@ Mỗi supplier có đầy đủ thông tin:
 - Sử dụng `--force` để thêm suppliers mới ngay cả khi đã có data
 - Sử dụng `--clear` để xóa toàn bộ data cũ trước khi seed
 - Tất cả operations đều được log chi tiết để theo dõi quá trình
+
+## Book Suppliers Management Scripts
+
+### 1. `verify-book-suppliers.py`
+Script kiểm tra và xác minh dữ liệu BookSuppliers hiện tại.
+
+**Chức năng:**
+- Kiểm tra cấu trúc database và các bảng cần thiết
+- Xác minh cột Suppliers đã được thêm vào bảng AppBooks
+- Phân tích dữ liệu hiện tại trong BookSuppliers
+- Preview những thay đổi sẽ được thực hiện
+
+**Cách chạy:**
+```bash
+python verify-book-suppliers.py
+# hoặc
+run-verify-book-suppliers.bat
+```
+
+### 2. `update-book-suppliers.py`
+Script cập nhật trường Suppliers trong bảng Books từ dữ liệu BookSuppliers.
+
+**Chức năng:**
+- Đọc dữ liệu từ bảng AppBookSuppliers
+- Gom nhóm supplier IDs theo BookId
+- Cập nhật trường Suppliers trong bảng AppBooks với format comma-separated
+- Xác minh và báo cáo kết quả
+
+**Cách chạy:**
+```bash
+python update-book-suppliers.py
+# hoặc
+run-update-book-suppliers.bat
+```
+
+**Lưu ý quan trọng:**
+- Chạy `verify-book-suppliers.py` trước để kiểm tra dữ liệu
+- Đảm bảo đã chạy migration để thêm cột Suppliers vào bảng AppBooks
+- Script sẽ tự động backup và rollback nếu có lỗi
+- Tất cả thay đổi được log chi tiết
+
+### Quy trình khuyến nghị:
+1. Chạy migration để thêm cột Suppliers
+2. Chạy `verify-book-suppliers.py` để kiểm tra
+3. Chạy `update-book-suppliers.py` để cập nhật dữ liệu
+4. Kiểm tra kết quả trong database

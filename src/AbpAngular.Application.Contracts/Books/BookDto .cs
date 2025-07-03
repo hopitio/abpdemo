@@ -15,5 +15,9 @@ public class BookDto : AuditedEntityDto<Guid>
 
     public float Price { get; set; }
     
+    // Comma-separated supplier IDs
+    public string SuppliersString { get; set; } = string.Empty;
+    
+    // Navigation property for suppliers list
     public List<SupplierDto> Suppliers { get; set; } = new();
 }

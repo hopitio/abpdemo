@@ -10,7 +10,8 @@ public class AbpAngularApplicationAutoMapperProfile : Profile
     public AbpAngularApplicationAutoMapperProfile()
     {
         CreateMap<Book, BookDto>()
-            .ForMember(dest => dest.Suppliers, opt => opt.MapFrom(src => src.BookSuppliers.Select(bs => bs.Supplier)));
+            .ForMember(dest => dest.Suppliers, opt => opt.MapFrom(src => src.BookSuppliers.Select(bs => bs.Supplier)))
+            .ForMember(dest => dest.SuppliersString, opt => opt.MapFrom(src => src.Suppliers));
         CreateMap<CreateUpdateBookDto, Book>()
             .ForMember(dest => dest.BookSuppliers, opt => opt.Ignore());
         

@@ -26,6 +26,17 @@ public class BookAppService : ApplicationService, IBookAppService
         _bookSupplierRepository = bookSupplierRepository;
     }
 
+    // Helper methods for converting between string and list of IDs
+    private List<Guid> ConvertStringToSupplierIds(string supplierIds)
+    {
+        return SupplierHelper.ConvertStringToSupplierIds(supplierIds);
+    }
+
+    private string ConvertSupplierIdsToString(List<Guid> supplierIds)
+    {
+        return SupplierHelper.ConvertSupplierIdsToString(supplierIds);
+    }
+
     public async Task<BookDto> GetAsync(Guid id)
     {
         var queryable = await _repository.GetQueryableAsync();
@@ -52,16 +63,18 @@ public class BookAppService : ApplicationService, IBookAppService
         }
         
         return bookDto;
-    }    public async Task<PagedResultDto<BookDto>> GetListAsync(GetBookListDto input)
+    }
+
+    public async Task<PagedResultDto<BookDto>> GetListAsync(GetBookListDto input)
     {
         var queryable = await _repository.GetQueryableAsync();
-        
+
         // Apply filter if provided
         if (!string.IsNullOrWhiteSpace(input.Filter))
         {
             queryable = queryable.Where(x => x.Name.Contains(input.Filter));
         }
-        
+
         var query = queryable
             .OrderBy(input.Sorting.IsNullOrWhiteSpace() ? "Name" : input.Sorting)
             .Skip(input.SkipCount)
@@ -71,22 +84,22 @@ public class BookAppService : ApplicationService, IBookAppService
         var totalCount = await AsyncExecuter.CountAsync(queryable);
 
         var bookDtos = ObjectMapper.Map<List<Book>, List<BookDto>>(books);
-        
+
         // Load suppliers for each book
         var bookIds = books.Select(b => b.Id).ToList();
         var bookSuppliers = await _bookSupplierRepository.GetListAsync(bs => bookIds.Contains(bs.BookId));
         var supplierIds = bookSuppliers.Select(bs => bs.SupplierId).Distinct().ToList();
-        
+
         if (supplierIds.Any())
         {
             var supplierRepository = LazyServiceProvider.LazyGetRequiredService<IRepository<Supplier, Guid>>();
             var suppliers = await supplierRepository.GetListAsync(s => supplierIds.Contains(s.Id));
             var supplierDtos = ObjectMapper.Map<List<Supplier>, List<SupplierDto>>(suppliers);
-            
+
             // Group suppliers by book
             var suppliersByBook = bookSuppliers.GroupBy(bs => bs.BookId)
                 .ToDictionary(g => g.Key, g => g.Select(bs => bs.SupplierId).ToList());
-            
+
             // Assign suppliers to each book
             foreach (var bookDto in bookDtos)
             {
@@ -121,12 +134,23 @@ public class BookAppService : ApplicationService, IBookAppService
     public async Task<BookDto> CreateAsync(CreateUpdateBookDto input)
     {
         var book = ObjectMapper.Map<CreateUpdateBookDto, Book>(input);
+        
+        // Handle comma-separated supplier IDs
+        var supplierIds = ConvertStringToSupplierIds(input.Suppliers);
+        if (input.SupplierIds?.Any() == true)
+        {
+            supplierIds.AddRange(input.SupplierIds);
+        }
+        
+        // Store as comma-separated string in the book entity
+        book.Suppliers = ConvertSupplierIdsToString(supplierIds.Distinct().ToList());
+        
         await _repository.InsertAsync(book);
         
         // Handle many-to-many relationship with suppliers
-        if (input.SupplierIds?.Any() == true)
+        if (supplierIds.Any())
         {
-            var bookSuppliers = input.SupplierIds.Select(supplierId => new BookSupplier
+            var bookSuppliers = supplierIds.Select(supplierId => new BookSupplier
             {
                 BookId = book.Id,
                 SupplierId = supplierId
@@ -143,6 +167,17 @@ public class BookAppService : ApplicationService, IBookAppService
     {
         var book = await _repository.GetAsync(id);
         ObjectMapper.Map(input, book);
+        
+        // Handle comma-separated supplier IDs
+        var supplierIds = ConvertStringToSupplierIds(input.Suppliers);
+        if (input.SupplierIds?.Any() == true)
+        {
+            supplierIds.AddRange(input.SupplierIds);
+        }
+        
+        // Store as comma-separated string in the book entity
+        book.Suppliers = ConvertSupplierIdsToString(supplierIds.Distinct().ToList());
+        
         await _repository.UpdateAsync(book);
         
         // Remove existing supplier relationships
@@ -150,9 +185,9 @@ public class BookAppService : ApplicationService, IBookAppService
         await _bookSupplierRepository.DeleteManyAsync(existingBookSuppliers);
         
         // Add new supplier relationships
-        if (input.SupplierIds?.Any() == true)
+        if (supplierIds.Any())
         {
-            var bookSuppliers = input.SupplierIds.Select(supplierId => new BookSupplier
+            var bookSuppliers = supplierIds.Select(supplierId => new BookSupplier
             {
                 BookId = book.Id,
                 SupplierId = supplierId

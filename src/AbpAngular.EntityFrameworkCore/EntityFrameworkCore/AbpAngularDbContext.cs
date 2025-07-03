@@ -90,6 +90,7 @@ public class AbpAngularDbContext :
                 AbpAngularConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Suppliers).HasMaxLength(512);
         });
         
         builder.Entity<Supplier>(b =>

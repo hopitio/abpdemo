@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\AbpAngular.EntityFrameworkCore\AbpAngular.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\AbpAngular.Domain.Tests\AbpAngular.Domain.Tests.csproj" />
     <ProjectReference Include="..\AbpAngular.Application.Tests\AbpAngular.Application.Tests.csproj" />
   </ItemGroup>
 

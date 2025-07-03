@@ -14,7 +14,7 @@ using Volo.Abp.Uow;
 namespace AbpAngular.EntityFrameworkCore;
 
 [DependsOn(
-    typeof(AbpAngularApplicationTestModule),
+    typeof(AbpAngularTestBaseModule),
     typeof(AbpAngularEntityFrameworkCoreModule),
     typeof(AbpEntityFrameworkCoreSqliteModule)
 )]

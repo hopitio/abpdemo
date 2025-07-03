@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using AbpAngular.Books;
+using AbpAngular.Suppliers;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.Data;
@@ -29,6 +30,8 @@ public class AbpAngularDbContext :
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
     public DbSet<Book> Books { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
+    public DbSet<BookSupplier> BookSuppliers { get; set; }
 
     #region Entities from the modules
 
@@ -87,6 +90,33 @@ public class AbpAngularDbContext :
                 AbpAngularConsts.DbSchema);
             b.ConfigureByConvention(); //auto configure for the base class props
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+        });
+        
+        builder.Entity<Supplier>(b =>
+        {
+            b.ToTable(AbpAngularConsts.DbTablePrefix + "Suppliers",
+                AbpAngularConsts.DbSchema);
+            b.ConfigureByConvention(); //auto configure for the base class props
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            b.Property(x => x.Email).HasMaxLength(256);
+            b.Property(x => x.Phone).HasMaxLength(32);
+            b.Property(x => x.Address).HasMaxLength(512);
+            b.Property(x => x.Website).HasMaxLength(256);
+        });
+        
+        builder.Entity<BookSupplier>(b =>
+        {
+            b.ToTable(AbpAngularConsts.DbTablePrefix + "BookSuppliers",
+                AbpAngularConsts.DbSchema);
+            b.HasKey(x => new { x.BookId, x.SupplierId });
+            
+            b.HasOne(x => x.Book)
+                .WithMany(x => x.BookSuppliers)
+                .HasForeignKey(x => x.BookId);
+                
+            b.HasOne(x => x.Supplier)
+                .WithMany(x => x.BookSuppliers)
+                .HasForeignKey(x => x.SupplierId);
         });
         
         /* Configure your own tables/entities inside here */

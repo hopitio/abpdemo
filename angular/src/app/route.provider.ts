@@ -24,5 +24,12 @@ function configureRoutes() {
         layout: eLayoutType.application,
         requiredPolicy: 'AbpAngular.Books',
       },
+      {
+        path: '/suppliers',
+        name: '::Menu:Suppliers',
+        iconClass: 'fas fa-truck',
+        layout: eLayoutType.application,
+        requiredPolicy: 'AbpAngular.Suppliers',
+      },
   ]);
 }

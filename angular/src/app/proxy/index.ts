@@ -1,2 +1,3 @@
 import * as Books from './books';
-export { Books };
+import * as Suppliers from './suppliers';
+export { Books, Suppliers };

@@ -1,0 +1,257 @@
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col col-md-6">
+        <h5 class="card-title">
+          {{ '::Menu:Suppliers' | abpLocalization }}
+        </h5>
+      </div>
+      <div class="text-end col col-md-6">
+        <div class="text-lg-end pt-2">
+          <button
+            id="create"
+            class="btn btn-primary"
+            type="button"
+            (click)="createSupplier()"
+            *abpPermission="'AbpAngular.Suppliers.Create'"
+          >
+            <i class="fa fa-plus me-1"></i>
+            <span>{{ '::NewSupplier' | abpLocalization }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- Search and Filter Controls -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input
+            type="search"
+            id="search"
+            class="form-control"
+            [placeholder]="'::Search' | abpLocalization"
+            [(ngModel)]="list.filter"
+            (keyup.enter)="onSearch($event.target.value)"
+          />
+          <button class="btn btn-primary" type="button" (click)="onSearch(list.filter)">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <select
+          class="form-select"
+          (change)="onActiveFilter($event.target.value === 'true' ? true : $event.target.value === 'false' ? false : null)"
+        >
+          <option value="">{{ '::All' | abpLocalization }}</option>
+          <option value="true">{{ '::Active' | abpLocalization }}</option>
+          <option value="false">{{ '::Inactive' | abpLocalization }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <ngx-datatable
+      [rows]="supplier.items"
+      [count]="supplier.totalCount"
+      [list]="list"
+      default="supplier"
+      class="bootstrap"
+      [columns]="[]"
+      [sortType]="'single'"
+      [headerHeight]="50"
+      [footerHeight]="50"
+      [rowHeight]="'auto'"
+      [limit]="10"
+    >
+      <!-- Actions Column Template -->
+      <ngx-datatable-column name="::Actions" canAutoResize="false" sortable="false" width="150">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div ngbDropdown container="body" class="d-inline-block">
+            <button
+              class="btn btn-primary btn-sm dropdown-toggle"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              ngbDropdownToggle
+            >
+              <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
+            </button>
+            <div ngbDropdownMenu>
+              <button ngbDropdownItem (click)="editSupplier(row.id)" *abpPermission="'AbpAngular.Suppliers.Edit'">
+                {{ '::Edit' | abpLocalization }}
+              </button>
+              <button ngbDropdownItem (click)="delete(row.id)" *abpPermission="'AbpAngular.Suppliers.Delete'">
+                {{ '::Delete' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Status Column Template -->
+      <ngx-datatable-column name="::Status" sortable="true">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span
+            class="badge"
+            [class.bg-success]="row.isActive"
+            [class.bg-secondary]="!row.isActive"
+          >
+            {{ row.isActive ? ('::Active' | abpLocalization) : ('::Inactive' | abpLocalization) }}
+          </span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Name Column Template -->
+      <ngx-datatable-column name="::Name" sortable="true">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="fw-medium">{{ row.name }}</span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Email Column Template -->
+      <ngx-datatable-column name="::Email" sortable="true">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a *ngIf="row.email" [href]="'mailto:' + row.email" class="text-decoration-none">
+            {{ row.email }}
+          </a>
+          <span *ngIf="!row.email" class="text-muted">-</span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Phone Column Template -->
+      <ngx-datatable-column name="::Phone" sortable="false">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a *ngIf="row.phone" [href]="'tel:' + row.phone" class="text-decoration-none">
+            {{ row.phone }}
+          </a>
+          <span *ngIf="!row.phone" class="text-muted">-</span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Address Column Template -->
+      <ngx-datatable-column name="::Address" sortable="false">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span *ngIf="row.address" [title]="row.address">
+            {{ row.address.length > 50 ? (row.address | slice:0:50) + '...' : row.address }}
+          </span>
+          <span *ngIf="!row.address" class="text-muted">-</span>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Creation Time Column Template -->
+      <ngx-datatable-column name="::CreationTime" sortable="true">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          {{ row.creationTime | date:'short' }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<!-- Modal for Create/Edit -->
+<abp-modal size="md" [(visible)]="isModalOpen" [busy]="false">
+  <ng-template #abpHeader>
+    <h3>{{ (selectedSupplier.id ? '::Edit' : '::NewSupplier') | abpLocalization }}</h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="mt-2">
+        <label for="supplier-name">{{ '::Name' | abpLocalization }}</label><span> * </span>
+        <input 
+          type="text" 
+          id="supplier-name" 
+          class="form-control"
+          [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+          formControlName="name" 
+          autofocus 
+        />
+        <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched" class="invalid-feedback">
+          <span *ngIf="form.get('name')?.errors?.['required']">
+            {{ '::ThisFieldIsRequired' | abpLocalization }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="mt-2">
+        <label for="supplier-email">{{ '::Email' | abpLocalization }}</label>
+        <input 
+          type="email" 
+          id="supplier-email" 
+          class="form-control"
+          [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+          formControlName="email" 
+        />
+        <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="invalid-feedback">
+          <span *ngIf="form.get('email')?.errors?.['email']">
+            The Email field is not a valid e-mail address.
+          </span>
+        </div>
+      </div>
+      
+      <div class="mt-2">
+        <label for="supplier-phone">{{ '::Phone' | abpLocalization }}</label>
+        <input 
+          type="tel" 
+          id="supplier-phone" 
+          class="form-control"
+          [class.is-invalid]="form.get('phone')?.invalid && form.get('phone')?.touched"
+          formControlName="phone" 
+        />
+        <div *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched" class="invalid-feedback">
+          <span *ngIf="form.get('phone')?.errors?.['phone']">
+            The Phone field is not a valid phone number.
+          </span>
+        </div>
+      </div>
+      
+      <div class="mt-2">
+        <label for="supplier-address">{{ '::Address' | abpLocalization }}</label>
+        <textarea 
+          id="supplier-address" 
+          class="form-control" 
+          formControlName="address" 
+          rows="3">
+        </textarea>
+      </div>
+      
+      <div class="mt-2">
+        <label for="supplier-website">{{ '::Website' | abpLocalization }}</label>
+        <input 
+          type="url" 
+          id="supplier-website" 
+          class="form-control"
+          [class.is-invalid]="form.get('website')?.invalid && form.get('website')?.touched"
+          formControlName="website" 
+          placeholder="https://" 
+        />
+        <div *ngIf="form.get('website')?.invalid && form.get('website')?.touched" class="invalid-feedback">
+          <span *ngIf="form.get('website')?.errors?.['url']">
+            The Website field is not a valid fully-qualified http, https, or ftp URL.
+          </span>
+        </div>
+      </div>
+      
+      <div class="mt-2">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="supplier-active" formControlName="isActive" />
+          <label class="form-check-label" for="supplier-active">
+            {{ '::Active' | abpLocalization }}
+          </label>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-secondary" (click)="isModalOpen = false">
+      {{ '::Cancel' | abpLocalization }}
+    </button>
+    <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="fa fa-check me-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>

@@ -26,6 +26,16 @@
             {{ '::PublishInfo' | abpLocalization }}
           </button>
         </li>
+        <li class="nav-item" role="presentation">
+          <button 
+            class="nav-link"
+            [class.active]="activeTab === 'suppliers'"
+            (click)="setActiveTab('suppliers')"
+            type="button"
+            role="tab">
+            {{ '::Suppliers' | abpLocalization }}
+          </button>
+        </li>
       </ul>
 
       <!-- Tab content -->
@@ -63,6 +73,32 @@
               ngbDatepicker
               (click)="datepicker.toggle()"
             />
+          </div>
+        </div>
+
+        <!-- Suppliers Tab -->
+        <div class="tab-pane fade" [class.show]="activeTab === 'suppliers'" [class.active]="activeTab === 'suppliers'">
+          <div class="mt-2">
+            <label for="book-suppliers">{{ '::Suppliers' | abpLocalization }}</label>
+            <div class="supplier-checkboxes mt-2">
+              <div *ngFor="let supplier of suppliers" class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  [id]="'supplier-' + supplier.id"
+                  [value]="supplier.id"
+                  [checked]="isSupplierSelected(supplier.id)"
+                  (change)="onSupplierChange(supplier.id, $event.target.checked)"
+                />
+                <label class="form-check-label" [for]="'supplier-' + supplier.id">
+                  {{ supplier.name }}
+                  <small class="text-muted d-block">{{ supplier.email }}</small>
+                </label>
+              </div>
+              <div *ngIf="suppliers.length === 0" class="text-muted">
+                {{ '::NoSuppliersAvailable' | abpLocalization }}
+              </div>
+            </div>
           </div>
         </div>
       </div>

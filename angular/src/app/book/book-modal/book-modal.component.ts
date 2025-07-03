@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { BookService, BookDto, bookTypeOptions } from '../../proxy/books';
+import { SupplierService, SupplierDto } from '../../proxy/suppliers';
 
 @Component({
   standalone: false,
@@ -10,7 +11,7 @@ import { BookService, BookDto, bookTypeOptions } from '../../proxy/books';
   styleUrls: ['./book-modal.component.scss'],
   providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
 })
-export class BookModalComponent implements OnChanges {
+export class BookModalComponent implements OnChanges, OnInit {
   @Input() isModalOpen = false;
   @Input() selectedBook = {} as BookDto;
   @Output() isModalOpenChange = new EventEmitter<boolean>();
@@ -19,12 +20,18 @@ export class BookModalComponent implements OnChanges {
   form: FormGroup;
   bookTypes = bookTypeOptions;
   activeTab = 'basic'; // Default tab
+  suppliers: SupplierDto[] = [];
 
   constructor(
     private bookService: BookService,
+    private supplierService: SupplierService,
     private fb: FormBuilder
   ) {
     this.buildForm();
+  }
+
+  ngOnInit() {
+    this.loadSuppliers();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -42,6 +49,19 @@ export class BookModalComponent implements OnChanges {
         Validators.required,
       ],
       price: [this.selectedBook.price || null, Validators.required],
+      supplierIds: [this.selectedBook.suppliers?.map(s => s.id) || []],
+    });
+  }
+
+  loadSuppliers() {
+    this.supplierService.getList({
+      filter: '',
+      isActive: true,
+      sorting: 'name',
+      skipCount: 0,
+      maxResultCount: 1000
+    }).subscribe(result => {
+      this.suppliers = result.items;
     });
   }
 
@@ -68,5 +88,27 @@ export class BookModalComponent implements OnChanges {
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  isSupplierSelected(supplierId: string): boolean {
+    const selectedSupplierIds = this.form.get('supplierIds')?.value || [];
+    return selectedSupplierIds.includes(supplierId);
+  }
+
+  onSupplierChange(supplierId: string, isSelected: boolean) {
+    const selectedSupplierIds = this.form.get('supplierIds')?.value || [];
+    
+    if (isSelected) {
+      if (!selectedSupplierIds.includes(supplierId)) {
+        selectedSupplierIds.push(supplierId);
+      }
+    } else {
+      const index = selectedSupplierIds.indexOf(supplierId);
+      if (index > -1) {
+        selectedSupplierIds.splice(index, 1);
+      }
+    }
+    
+    this.form.patchValue({ supplierIds: selectedSupplierIds });
   }
 }

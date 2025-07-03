@@ -33,10 +33,19 @@ public class Program
                         .MinimumLevel.Information()
                     #endif
                         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Debug)
+                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Debug)
+                        .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Query", LogEventLevel.Debug)
                         .Enrich.FromLogContext()
                         .WriteTo.Async(c => c.File("Logs/logs.txt"))
                         .WriteTo.Async(c => c.Console())
+                        .WriteTo.Logger(sqlLogger => sqlLogger
+                            .Filter.ByIncludingOnly(e => e.Properties.ContainsKey("SourceContext") && 
+                                e.Properties["SourceContext"].ToString().Contains("Microsoft.EntityFrameworkCore"))
+                            .WriteTo.Async(c => c.File("Logs/sql-.log", 
+                                rollingInterval: RollingInterval.Day,
+                                restrictedToMinimumLevel: LogEventLevel.Information,
+                                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [SQL] {Message:lj}{NewLine}{Exception}")))
                         .WriteTo.Async(c => c.AbpStudio(services));
                 });
             await builder.AddApplicationAsync<AbpAngularHttpApiHostModule>();

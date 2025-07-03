@@ -70,9 +70,50 @@ public class BookAppService : ApplicationService, IBookAppService
         var books = await AsyncExecuter.ToListAsync(query);
         var totalCount = await AsyncExecuter.CountAsync(queryable);
 
+        var bookDtos = ObjectMapper.Map<List<Book>, List<BookDto>>(books);
+        
+        // Load suppliers for each book
+        var bookIds = books.Select(b => b.Id).ToList();
+        var bookSuppliers = await _bookSupplierRepository.GetListAsync(bs => bookIds.Contains(bs.BookId));
+        var supplierIds = bookSuppliers.Select(bs => bs.SupplierId).Distinct().ToList();
+        
+        if (supplierIds.Any())
+        {
+            var supplierRepository = LazyServiceProvider.LazyGetRequiredService<IRepository<Supplier, Guid>>();
+            var suppliers = await supplierRepository.GetListAsync(s => supplierIds.Contains(s.Id));
+            var supplierDtos = ObjectMapper.Map<List<Supplier>, List<SupplierDto>>(suppliers);
+            
+            // Group suppliers by book
+            var suppliersByBook = bookSuppliers.GroupBy(bs => bs.BookId)
+                .ToDictionary(g => g.Key, g => g.Select(bs => bs.SupplierId).ToList());
+            
+            // Assign suppliers to each book
+            foreach (var bookDto in bookDtos)
+            {
+                var bookId = bookDto.Id;
+                if (suppliersByBook.ContainsKey(bookId))
+                {
+                    var bookSupplierIds = suppliersByBook[bookId];
+                    bookDto.Suppliers = supplierDtos.Where(s => bookSupplierIds.Contains(s.Id)).ToList();
+                }
+                else
+                {
+                    bookDto.Suppliers = new List<SupplierDto>();
+                }
+            }
+        }
+        else
+        {
+            // No suppliers, initialize empty lists
+            foreach (var bookDto in bookDtos)
+            {
+                bookDto.Suppliers = new List<SupplierDto>();
+            }
+        }
+
         return new PagedResultDto<BookDto>(
             totalCount,
-            ObjectMapper.Map<List<Book>, List<BookDto>>(books)
+            bookDtos
         );
     }
 

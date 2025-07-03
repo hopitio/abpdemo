@@ -58,6 +58,7 @@
     "PublishInfo": "Publish Information",
     "Suppliers": "Suppliers",
     "NoSuppliersAvailable": "No suppliers available",
+    "NoSuppliers": "No suppliers",
     "ThisFieldIsRequired": "This field is required",
     "InvalidEmailAddress": "Invalid email address",
     "InvalidWebsiteFormat": "Invalid website format. Please use http:// or https://"

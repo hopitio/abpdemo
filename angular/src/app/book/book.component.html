@@ -46,7 +46,7 @@
     </div>
   </div>
   <div class="card-body">
-    <ngx-datatable [rows]="book.items" [count]="book.totalCount" [list]="list" default>
+    <ngx-datatable [rows]="book.items" [count]="book.totalCount" [list]="list" [limit]="500" default>
       <ngx-datatable-column
         [name]="'::Actions' | abpLocalization"
         [maxWidth]="150"
@@ -87,6 +87,22 @@
       <ngx-datatable-column [name]="'::Price' | abpLocalization" prop="price">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{ row.price | currency }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Suppliers' | abpLocalization">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div *ngIf="row.suppliers && row.suppliers.length > 0; else noSuppliers">
+            <span 
+              *ngFor="let supplier of row.suppliers; let last = last"
+              class="badge bg-secondary me-1 mb-1"
+              [title]="supplier.name"
+            >
+              {{ supplier.name }}
+            </span>
+          </div>
+          <ng-template #noSuppliers>
+            <span class="text-muted">{{ '::NoSuppliers' | abpLocalization }}</span>
+          </ng-template>
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>  </div>

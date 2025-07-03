@@ -25,6 +25,9 @@ export class BookComponent implements OnInit {
     private confirmation: ConfirmationService
   ) {}
   ngOnInit() {
+    // Configure page size to 500 records per page
+    this.list.maxResultCount = 500;
+    
     const bookStreamCreator = (query) => {
       return this.bookService.getList({
         ...query,

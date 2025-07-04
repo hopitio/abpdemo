@@ -1,0 +1,244 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.9 Chrome/134.0.6998.205 Electron/35.4.0 Safari/537.36" version="27.0.9">
+  <diagram name="ABP Angular Class Diagram" id="class-diagram">
+    <mxGraphModel dx="1426" dy="841" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="domain-layer" value="&lt;&lt;Domain Layer&gt;&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="800" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="book-entity" value="Book" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="domain-layer" vertex="1">
+          <mxGeometry x="20" y="40" width="220" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="book-props" value="- Id: Guid&#xa;- Name: string&#xa;- Type: BookType&#xa;- PublishDate: DateTime&#xa;- Price: float&#xa;- Suppliers: string&#xa;- CreationTime: DateTime&#xa;- LastModificationTime: DateTime&#xa;- BookSuppliers: ICollection&lt;BookSupplier&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="book-entity" vertex="1">
+          <mxGeometry y="26" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="book-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="book-entity" vertex="1">
+          <mxGeometry y="166" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="book-methods" value="+ GetKeys(): object[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="book-entity" vertex="1">
+          <mxGeometry y="174" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="supplier-entity" value="Supplier" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="domain-layer" vertex="1">
+          <mxGeometry x="280" y="40" width="220" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="supplier-props" value="- Id: Guid&#xa;- Name: string&#xa;- Email: string?&#xa;- Phone: string?&#xa;- Address: string?&#xa;- Website: string?&#xa;- IsActive: bool&#xa;- CreationTime: DateTime&#xa;- LastModificationTime: DateTime&#xa;- BookSuppliers: ICollection&lt;BookSupplier&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplier-entity" vertex="1">
+          <mxGeometry y="26" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="supplier-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="supplier-entity" vertex="1">
+          <mxGeometry y="166" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="supplier-methods" value="+ GetKeys(): object[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplier-entity" vertex="1">
+          <mxGeometry y="174" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="booksupplier-entity" value="BookSupplier" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="domain-layer" vertex="1">
+          <mxGeometry x="540" y="40" width="220" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="booksupplier-props" value="- BookId: Guid&#xa;- SupplierId: Guid&#xa;- Book: Book&#xa;- Supplier: Supplier&#xa;- CreationTime: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="booksupplier-entity" vertex="1">
+          <mxGeometry y="26" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="booksupplier-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="booksupplier-entity" vertex="1">
+          <mxGeometry y="106" width="220" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="booksupplier-methods" value="+ GetKeys(): object[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="booksupplier-entity" vertex="1">
+          <mxGeometry y="114" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="booktype-enum" value="&lt;&lt;enum&gt;&gt;&#xa;BookType" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#fff2cc;strokeColor=#d6b656;" parent="domain-layer" vertex="1">
+          <mxGeometry x="20" y="280" width="140" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="booktype-values" value="Undefined&#xa;Adventure&#xa;Biography&#xa;Dystopia&#xa;Fantastic&#xa;Horror&#xa;Science&#xa;ScienceFiction&#xa;Poetry" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="booktype-enum" vertex="1">
+          <mxGeometry y="26" width="140" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierhelper-class" value="&lt;&lt;static&gt;&gt;&#xa;SupplierHelper" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="domain-layer" vertex="1">
+          <mxGeometry x="200" y="280" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierhelper-methods" value="+ ConvertStringToSupplierIds(string): List&lt;Guid&gt;&#xa;+ ConvertSupplierIdsToString(List&lt;Guid&gt;): string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplierhelper-class" vertex="1">
+          <mxGeometry y="26" width="280" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="contracts-layer" value="&lt;&lt;Application Contracts Layer&gt;&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="900" y="40" width="900" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="bookdto-class" value="BookDto" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="contracts-layer" vertex="1">
+          <mxGeometry x="20" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="bookdto-props" value="+ Id: Guid&#xa;+ Name: string&#xa;+ Type: BookType&#xa;+ PublishDate: DateTime&#xa;+ Price: float&#xa;+ SuppliersString: string&#xa;+ Suppliers: List&lt;SupplierDto&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="bookdto-class" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierdto-class" value="SupplierDto" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="contracts-layer" vertex="1">
+          <mxGeometry x="250" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierdto-props" value="+ Id: Guid&#xa;+ Name: string&#xa;+ Email: string?&#xa;+ Phone: string?&#xa;+ Address: string?&#xa;+ Website: string?&#xa;+ IsActive: bool&#xa;+ CreationTime: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplierdto-class" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="createupdatebookdto-class" value="CreateUpdateBookDto" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="contracts-layer" vertex="1">
+          <mxGeometry x="480" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="createupdatebookdto-props" value="+ Name: string [Required]&#xa;+ Type: BookType [Required]&#xa;+ PublishDate: DateTime&#xa;+ Price: float [Required]&#xa;+ Suppliers: string&#xa;+ SupplierIds: List&lt;Guid&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="createupdatebookdto-class" vertex="1">
+          <mxGeometry y="26" width="200" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="createupdatesupplierdto-class" value="CreateUpdateSupplierDto" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="contracts-layer" vertex="1">
+          <mxGeometry x="700" y="40" width="180" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="createupdatesupplierdto-props" value="+ Name: string [Required]&#xa;+ Email: string?&#xa;+ Phone: string?&#xa;+ Address: string?&#xa;+ Website: string?&#xa;+ IsActive: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="createupdatesupplierdto-class" vertex="1">
+          <mxGeometry y="26" width="180" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="ibookappservice-interface" value="&lt;&lt;interface&gt;&gt;&#xa;IBookAppService" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#fff2cc;strokeColor=#d6b656;" parent="contracts-layer" vertex="1">
+          <mxGeometry x="20" y="240" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ibookappservice-methods" value="+ GetAsync(Guid): Task&lt;BookDto&gt;&#xa;+ GetListAsync(GetBookListDto): Task&lt;PagedResultDto&lt;BookDto&gt;&gt;&#xa;+ CreateAsync(CreateUpdateBookDto): Task&lt;BookDto&gt;&#xa;+ UpdateAsync(Guid, CreateUpdateBookDto): Task&lt;BookDto&gt;&#xa;+ DeleteAsync(Guid): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="ibookappservice-interface" vertex="1">
+          <mxGeometry y="26" width="320" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="isupplierappservice-interface" value="&lt;&lt;interface&gt;&gt;&#xa;ISupplierAppService" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#fff2cc;strokeColor=#d6b656;" parent="contracts-layer" vertex="1">
+          <mxGeometry x="360" y="240" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="isupplierappservice-methods" value="+ GetAsync(Guid): Task&lt;SupplierDto&gt;&#xa;+ GetListAsync(GetSupplierListDto): Task&lt;PagedResultDto&lt;SupplierDto&gt;&gt;&#xa;+ CreateAsync(CreateUpdateSupplierDto): Task&lt;SupplierDto&gt;&#xa;+ UpdateAsync(Guid, CreateUpdateSupplierDto): Task&lt;SupplierDto&gt;&#xa;+ DeleteAsync(Guid): Task" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="isupplierappservice-interface" vertex="1">
+          <mxGeometry y="26" width="350" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="permissions-class" value="&lt;&lt;static&gt;&gt;&#xa;AbpAngularPermissions" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="contracts-layer" vertex="1">
+          <mxGeometry x="20" y="400" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="permissions-props" value="+ GroupName: string&#xa;&#xa;Books:&#xa;  + Default: string&#xa;  + Create: string&#xa;  + Edit: string&#xa;  + Delete: string&#xa;&#xa;Suppliers:&#xa;  + Default: string&#xa;  + Create: string&#xa;  + Edit: string&#xa;  + Delete: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="permissions-class" vertex="1">
+          <mxGeometry y="26" width="260" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="application-layer" value="&lt;&lt;Application Layer&gt;&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="40" y="700" width="1200" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="bookappservice-class" value="BookAppService" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="application-layer" vertex="1">
+          <mxGeometry x="40" y="40" width="400" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="bookappservice-fields" value="- _repository: IRepository&lt;Book, Guid&gt;&#xa;- _supplierRepository: IRepository&lt;Supplier, Guid&gt;&#xa;- _supplierCache: IDistributedCache&lt;SupplierDto&gt;&#xa;- _memoryCache: IMemoryCache" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="bookappservice-class" vertex="1">
+          <mxGeometry y="26" width="400" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bookappservice-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="bookappservice-class" vertex="1">
+          <mxGeometry y="86" width="400" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="bookappservice-methods" value="+ GetAsync(Guid): Task&lt;BookDto&gt; [Authorize]&#xa;+ GetListAsync(GetBookListDto): Task&lt;PagedResultDto&lt;BookDto&gt;&gt; [Authorize]&#xa;+ CreateAsync(CreateUpdateBookDto): Task&lt;BookDto&gt; [Authorize(Create)]&#xa;+ UpdateAsync(Guid, CreateUpdateBookDto): Task&lt;BookDto&gt; [Authorize(Edit)]&#xa;+ DeleteAsync(Guid): Task [Authorize(Delete)]&#xa;- ConvertStringToSupplierIds(string): List&lt;Guid&gt;&#xa;- ConvertSupplierIdsToString(List&lt;Guid&gt;): string&#xa;- GetSuppliersWithCacheAsync(List&lt;Guid&gt;): Task&lt;List&lt;SupplierDto&gt;&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="bookappservice-class" vertex="1">
+          <mxGeometry y="94" width="400" height="206" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierappservice-class" value="SupplierAppService" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="application-layer" vertex="1">
+          <mxGeometry x="480" y="40" width="380" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierappservice-fields" value="- _repository: IRepository&lt;Supplier, Guid&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplierappservice-class" vertex="1">
+          <mxGeometry y="26" width="380" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierappservice-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="supplierappservice-class" vertex="1">
+          <mxGeometry y="52" width="380" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierappservice-methods" value="+ GetAsync(Guid): Task&lt;SupplierDto&gt; [Authorize]&#xa;+ GetListAsync(GetSupplierListDto): Task&lt;PagedResultDto&lt;SupplierDto&gt;&gt; [Authorize]&#xa;+ CreateAsync(CreateUpdateSupplierDto): Task&lt;SupplierDto&gt; [Authorize(Create)]&#xa;+ UpdateAsync(Guid, CreateUpdateSupplierDto): Task&lt;SupplierDto&gt; [Authorize(Edit)]&#xa;+ DeleteAsync(Guid): Task [Authorize(Delete)]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplierappservice-class" vertex="1">
+          <mxGeometry y="60" width="380" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="automapper-class" value="AbpAngularApplicationAutoMapperProfile" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="application-layer" vertex="1">
+          <mxGeometry x="900" y="40" width="280" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="automapper-methods" value="+ Configure():&#xa;  - Book → BookDto&#xa;  - CreateUpdateBookDto → Book&#xa;  - Supplier → SupplierDto&#xa;  - CreateUpdateSupplierDto → Supplier" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="automapper-class" vertex="1">
+          <mxGeometry y="26" width="280" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="infrastructure-layer" value="&lt;&lt;Infrastructure Layer - Entity Framework Core&gt;&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="1320" y="700" width="600" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="dbcontext-class" value="AbpAngularDbContext" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="infrastructure-layer" vertex="1">
+          <mxGeometry x="40" y="40" width="280" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="dbcontext-props" value="+ Books: DbSet&lt;Book&gt;&#xa;+ Suppliers: DbSet&lt;Supplier&gt;&#xa;+ BookSuppliers: DbSet&lt;BookSupplier&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="dbcontext-class" vertex="1">
+          <mxGeometry y="26" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dbcontext-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="dbcontext-class" vertex="1">
+          <mxGeometry y="76" width="280" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="dbcontext-methods" value="+ OnModelCreating(ModelBuilder): void&#xa;- ConfigureBook(EntityTypeBuilder): void&#xa;- ConfigureSupplier(EntityTypeBuilder): void&#xa;- ConfigureBookSupplier(EntityTypeBuilder): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="dbcontext-class" vertex="1">
+          <mxGeometry y="84" width="280" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="angular-layer" value="&lt;&lt;Angular Frontend&gt;&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="2000" y="40" width="800" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="bookservice-angular" value="BookService (Angular)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="angular-layer" vertex="1">
+          <mxGeometry x="40" y="40" width="320" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="bookservice-angular-props" value="+ apiName: string = &#39;Default&#39;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="bookservice-angular" vertex="1">
+          <mxGeometry y="26" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="bookservice-angular-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="bookservice-angular" vertex="1">
+          <mxGeometry y="52" width="320" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="bookservice-angular-methods" value="+ create(CreateUpdateBookDto): Observable&lt;BookDto&gt;&#xa;+ delete(id: string): Observable&lt;void&gt;&#xa;+ get(id: string): Observable&lt;BookDto&gt;&#xa;+ getList(input): Observable&lt;PagedResultDto&lt;BookDto&gt;&gt;&#xa;+ update(id: string, input): Observable&lt;BookDto&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="bookservice-angular" vertex="1">
+          <mxGeometry y="60" width="320" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierservice-angular" value="SupplierService (Angular)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="angular-layer" vertex="1">
+          <mxGeometry x="400" y="40" width="360" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierservice-angular-props" value="+ apiName: string = &#39;Default&#39;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplierservice-angular" vertex="1">
+          <mxGeometry y="26" width="360" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierservice-angular-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="supplierservice-angular" vertex="1">
+          <mxGeometry y="52" width="360" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierservice-angular-methods" value="+ create(CreateUpdateSupplierDto): Observable&lt;SupplierDto&gt;&#xa;+ delete(id: string): Observable&lt;void&gt;&#xa;+ get(id: string): Observable&lt;SupplierDto&gt;&#xa;+ getList(input): Observable&lt;PagedResultDto&lt;SupplierDto&gt;&gt;&#xa;+ update(id: string, input): Observable&lt;SupplierDto&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="supplierservice-angular" vertex="1">
+          <mxGeometry y="60" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-models" value="TypeScript Models" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#fff2cc;strokeColor=#d6b656;" parent="angular-layer" vertex="1">
+          <mxGeometry x="40" y="280" width="720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-models-content" value="BookDto: { id: string, name: string, type: BookType, publishDate: string, price: number, suppliers: SupplierDto[] }&#xa;SupplierDto: { id: string, name: string, email?: string, phone?: string, address?: string, website?: string, isActive: boolean, creationTime: string }&#xa;CreateUpdateBookDto: { name: string, type: BookType, publishDate: string, price: number, supplierIds?: string[] }&#xa;CreateUpdateSupplierDto: { name: string, email?: string, phone?: string, address?: string, website?: string, isActive: boolean }&#xa;GetBookListDto: PagedAndSortedResultRequestDto &amp; { filter?: string }&#xa;GetSupplierListDto: PagedAndSortedResultRequestDto &amp; { filter?: string, isActive?: boolean }" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="ts-models" vertex="1">
+          <mxGeometry y="26" width="720" height="154" as="geometry" />
+        </mxCell>
+        <mxCell id="book-booksupplier-rel" value="" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;" parent="1" source="book-entity" target="booksupplier-entity" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="140" as="sourcePoint" />
+            <mxPoint x="680" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="book-booksupplier-label" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;" parent="book-booksupplier-rel" connectable="0" vertex="1">
+          <mxGeometry x="-1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="book-booksupplier-label2" value="*" style="resizable=0;html=1;align=right;verticalAlign=bottom;" parent="book-booksupplier-rel" connectable="0" vertex="1">
+          <mxGeometry x="1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="supplier-booksupplier-rel" value="" style="endArrow=diamondThin;endFill=0;endSize=24;html=1;" parent="1" source="supplier-entity" target="booksupplier-entity" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500" y="140" as="sourcePoint" />
+            <mxPoint x="540" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="supplier-booksupplier-label" value="1" style="resizable=0;html=1;align=left;verticalAlign=bottom;" parent="supplier-booksupplier-rel" connectable="0" vertex="1">
+          <mxGeometry x="-1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="supplier-booksupplier-label2" value="*" style="resizable=0;html=1;align=right;verticalAlign=bottom;" parent="supplier-booksupplier-rel" connectable="0" vertex="1">
+          <mxGeometry x="1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="book-booktype-rel" value="" style="endArrow=open;endFill=1;endSize=12;html=1;dashed=1;" parent="1" source="book-entity" target="booktype-enum" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="book-booktype-label" value="uses" style="resizable=0;html=1;align=center;verticalAlign=middle;" parent="book-booktype-rel" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bookappservice-impl-rel" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;" parent="1" source="bookappservice-class" target="ibookappservice-interface" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="bookappservice-impl-label" value="implements" style="resizable=0;html=1;align=center;verticalAlign=middle;" parent="bookappservice-impl-rel" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierappservice-impl-rel" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;" parent="1" source="supplierappservice-class" target="isupplierappservice-interface" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="supplierappservice-impl-label" value="implements" style="resizable=0;html=1;align=center;verticalAlign=middle;" parent="supplierappservice-impl-rel" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="angular-dto-rel" value="" style="endArrow=open;endFill=1;endSize=12;html=1;dashed=1;" parent="1" source="bookservice-angular" target="bookdto-class" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="angular-dto-label" value="uses" style="resizable=0;html=1;align=center;verticalAlign=middle;" parent="angular-dto-rel" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="title" value="ABP Angular Class Diagram - Book Management System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="10" width="500" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="Legend" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=1;collapsible=1;resizeParent=1;resizeParentMax=0;resizeLast=0;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="2000" y="700" width="300" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-content" value="Domain Layer (Red): Core business entities&#xa;Application Contracts (Green): DTOs and interfaces&#xa;Application Layer (Orange): Service implementations&#xa;Infrastructure (Red): Data access layer&#xa;Angular Frontend (Purple): TypeScript services&#xa;&#xa;Relationships:&#xa;→ Association&#xa;◇ Aggregation&#xa;⬥ Composition&#xa;- - - → Dependency&#xa;- - - ▷ Implementation" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="legend" vertex="1">
+          <mxGeometry y="26" width="300" height="274" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
